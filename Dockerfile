@@ -39,6 +39,10 @@ COPY nginx.conf /etc/nginx/sites-available/default
 
 # Copy entrypoint script ke dalam container untuk handle auto-migration
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+
+# PAKSA UBAH FORMAT WINDOWS (CRLF) KE LINUX (LF) AGAR TIDAK ERROR "NO SUCH FILE"
+RUN sed -i 's/\r$//' /usr/local/bin/entrypoint.sh
+
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
 # Expose port
