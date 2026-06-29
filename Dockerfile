@@ -15,8 +15,8 @@ RUN apt-get update && apt-get install -y \
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Install PHP extensions dengan dependensi Postgres yang benar
-RUN docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
+# Install PHP extensions (Tanda minus di--with-pgsql sudah diperbaiki)
+RUN docker-php-ext-configure pgsql --with-pgsql=/usr/local/pgsql \
     && docker-php-ext-install pdo_pgsql pgsql mbstring exif pcntl bcmath gd
 
 # Get latest Composer
@@ -34,8 +34,8 @@ RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
 # Install dependencies
 RUN composer install --no-dev --optimize-autoloader
 
-# Setup Nginx configuration
-COPY deployment/nginx.conf /etc/nginx/sites-available/default
+# Setup Nginx configuration (Langsung membaca nginx.conf dari root)
+COPY nginx.conf /etc/nginx/sites-available/default
 
 # Expose port
 EXPOSE 80
