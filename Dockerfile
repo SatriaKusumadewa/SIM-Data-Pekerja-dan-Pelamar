@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y \
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Install PHP extensions (Termasuk driver PostgreSQL)
+# Install PHP extensions (Driver PostgreSQL wajib untuk Render Cloud)
 RUN docker-php-ext-configure pgsql --with-pgsql=/usr/local/pgsql \
     && docker-php-ext-install pdo_pgsql pgsql mbstring exif pcntl bcmath gd
 
@@ -37,8 +37,12 @@ RUN composer install --no-dev --optimize-autoloader
 # Setup Nginx configuration langsung dari root
 COPY nginx.conf /etc/nginx/sites-available/default
 
+# Copy entrypoint script ke dalam container untuk handle auto-migration
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
 # Expose port
 EXPOSE 80
 
-# Jalankan migrasi database otomatis secara paksa saat server dinyalakan
-CMD php artisan migrate --force && service nginx start && php-fpm
+# Jalankan aplikasi melalui entrypoint script
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
