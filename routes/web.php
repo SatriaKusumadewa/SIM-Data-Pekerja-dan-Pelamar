@@ -25,26 +25,26 @@ require __DIR__.'/auth.php';
 Route::get('/dashboard', function () {
     $user = auth()->user();
 
-    if ($user->hasRole('Admin')) {
+    if ($user->hasRole('admin')) {
         return redirect()->route('admin.dashboard');
     }
 
-    if ($user->hasRole('HRD')) {
+    if ($user->hasRole('hrd')) {
         return redirect()->route('hrd.dashboard');
     }
 
-    if ($user->hasRole('Manajer')) {
+    if ($user->hasRole('manajer')) {
         return redirect()->route('manajer.dashboard');
     }
 
-    if ($user->hasRole('Karyawan')) {
+    if ($user->hasRole('karyawan')) {
         return redirect()->route('karyawan.dashboard');
     }
 
     abort(403, 'Role tidak dikenali.');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::middleware(['auth', 'role:Admin'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
     Route::get('/search', [AdminSearchController::class, 'index'])->name('search');
 
@@ -52,7 +52,7 @@ Route::middleware(['auth', 'role:Admin'])->prefix('admin')->name('admin.')->grou
     Route::resource('/roles', RoleController::class)->only(['index', 'create', 'store', 'destroy']);
 });
 
-Route::middleware(['auth', 'role:HRD'])->group(function () {
+Route::middleware(['auth', 'role:hrd'])->group(function () {
     Route::get('/hrd/dashboard', [HrdDashboardController::class, 'index'])
         ->name('hrd.dashboard');
 
@@ -122,7 +122,7 @@ Route::middleware(['auth', 'role:HRD'])->group(function () {
         ->name('hrd.data-karyawan.status');
 });
 
-Route::middleware(['auth', 'role:Manajer'])->group(function () {
+Route::middleware(['auth', 'role:manajer'])->group(function () {
     Route::get('/manajer/dashboard', [ManajerDashboardController::class, 'index'])
         ->name('manajer.dashboard');
 
@@ -142,7 +142,7 @@ Route::middleware(['auth', 'role:Manajer'])->group(function () {
         ->name('manajer.data-pelamar.show');
 });
 
-Route::middleware(['auth', 'role:Karyawan'])->group(function () {
+Route::middleware(['auth', 'role:karyawan'])->group(function () {
     Route::redirect('/karyawan/dashboard', '/karyawan/profil')
         ->name('karyawan.dashboard');
 
