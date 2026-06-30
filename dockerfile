@@ -1,8 +1,8 @@
 FROM php:8.2-cli
 
-# Install system dependencies
+# Install dependencies
 RUN apt-get update && apt-get install -y \
-    unzip git curl libpq-dev \
+    unzip git curl libpq-dev nodejs npm \
     && docker-php-ext-install pdo pdo_pgsql
 
 # Install Composer
@@ -13,8 +13,12 @@ WORKDIR /app
 # Copy project
 COPY . .
 
-# Install Laravel dependencies
+# Install PHP dependencies
 RUN composer install
+
+# 🔥 INI YANG PENTING (FIX VITE)
+RUN npm install
+RUN npm run build
 
 # Expose port
 EXPOSE 10000
