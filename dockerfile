@@ -8,6 +8,7 @@ RUN apt-get update && apt-get install -y \
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
+# Set working directory
 WORKDIR /app
 
 # Copy project
@@ -25,7 +26,7 @@ RUN mkdir -p storage/framework/sessions \
     && mkdir -p storage/framework/cache \
     && chmod -R 775 storage bootstrap/cache
 
-# Clear cache
+# Clear Laravel cache
 RUN php artisan config:clear \
     && php artisan cache:clear \
     && php artisan optimize:clear
