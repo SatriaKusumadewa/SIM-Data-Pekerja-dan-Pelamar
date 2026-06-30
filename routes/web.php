@@ -165,4 +165,9 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+Route::get('/session-test', function () {
+    session(['test' => 'berhasil']);
+    return session('test');
+});
+
 require __DIR__ . '/auth.php';
