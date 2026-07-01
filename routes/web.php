@@ -167,7 +167,15 @@ Route::middleware(['auth'])->group(function () {
 
 Route::get('/session-test', function () {
     session(['test' => 'berhasil']);
-    return session('test');
+    return response()->json([
+        'session_write' => session('test'),
+        'roles' => \Spatie\Permission\Models\Role::all(['id', 'name', 'guard_name']),
+        'users_with_roles' => \App\Models\User::with('roles')->get()->map(fn($u) => [
+            'id' => $u->id,
+            'email' => $u->email,
+            'roles' => $u->roles->pluck('name'),
+        ]),
+    ]);
 });
 
 require __DIR__ . '/auth.php';
