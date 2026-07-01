@@ -178,4 +178,20 @@ Route::get('/session-test', function () {
     ]);
 });
 
+Route::get('/debug-check', function () {
+    return response()->json([
+        'roles' => \Spatie\Permission\Models\Role::all(['id', 'name', 'guard_name']),
+        'permissions_count' => \Spatie\Permission\Models\Permission::count(),
+        'users' => \App\Models\User::with('roles')->get()->map(fn($u) => [
+            'id' => $u->id,
+            'name' => $u->name,
+            'email' => $u->email,
+            'roles' => $u->roles->pluck('name'),
+        ]),
+        'migrations_ran' => \Illuminate\Support\Facades\DB::table('migrations')
+            ->where('migration', 'like', '%permission%')
+            ->get(),
+    ]);
+});
+
 require __DIR__ . '/auth.php';
